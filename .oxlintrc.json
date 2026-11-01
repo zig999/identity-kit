@@ -1,0 +1,77 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "import", "node", "vitest"],
+  "categories": {
+    "correctness": "off"
+  },
+  "ignorePatterns": ["node_modules", "dist", "coverage"],
+  "overrides": [
+    {
+      "files": ["src/**/*.ts"],
+      "rules": {
+        "eslint/no-console": "error",
+        "import/no-cycle": "error",
+        "node/no-process-env": "error",
+        "eslint/no-empty": "error",
+        "eslint/preserve-caught-error": "error",
+        "typescript/no-floating-promises": "error",
+        "typescript/no-misused-promises": "error",
+        "typescript/await-thenable": "error",
+        "typescript/switch-exhaustiveness-check": "error",
+        "typescript/only-throw-error": "error",
+        "typescript/prefer-promise-reject-errors": "error",
+        "typescript/return-await": ["error", "in-try-catch"],
+        "typescript/no-explicit-any": "error",
+        "typescript/consistent-type-assertions": [
+          "error",
+          {
+            "assertionStyle": "never"
+          }
+        ],
+        "typescript/no-non-null-assertion": "error",
+        "typescript/explicit-module-boundary-types": "error",
+        "eslint/no-magic-numbers": [
+          "error",
+          {
+            "ignore": [0, 1, -1]
+          }
+        ],
+        "eslint/max-lines-per-function": [
+          "error",
+          {
+            "max": 30
+          }
+        ],
+        "eslint/max-params": [
+          "error",
+          {
+            "max": 3
+          }
+        ],
+        "eslint/no-unused-vars": "error"
+      }
+    },
+    {
+      "files": ["src/**/*.ts"],
+      "rules": {}
+    },
+    {
+      "files": ["src/**/*.ts", "tests/**/*.ts"],
+      "rules": {
+        "unicorn/filename-case": [
+          "error",
+          {
+            "case": "kebabCase"
+          }
+        ]
+      }
+    },
+    {
+      "files": ["tests/**/*.ts"],
+      "rules": {
+        "vitest/no-focused-tests": "error",
+        "vitest/no-disabled-tests": "error"
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "name": "identity-kit",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.14.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint --type-aware --deny-warnings --report-unused-disable-directives",
+    "format": "prettier --check .",
+    "test": "vitest run",
+    "test:architecture": "vitest run --project architecture",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "duplication": "jscpd src",
+    "secrets": "secretlint \"**/*\"",
+    "release": "sh scripts/release.sh"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@secretlint/secretlint-rule-preset-recommend": "^13.0.0",
+    "@types/node": "^24.0.0",
+    "jscpd": "^5.0.0",
+    "oxc-parser": ">=0.99.0 <1.0.0",
+    "oxlint": "^1.0.0",
+    "oxlint-tsgolint": "^7.0.0",
+    "prettier": "^3.0.0",
+    "secretlint": "^13.0.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3"
+  }
+}
