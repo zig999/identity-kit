@@ -50,14 +50,14 @@ Exportada por `exports` do `package.json`, sem acesso a arquivos internos.
 
 | Subcaminho | Conteúdo |
 |---|---|
-| `identity-kit` | `bearerTokenOf`, `createJwksClient`, `createTokenVerifier`, `createAuthenticator`, `createCaller`, `baseClaimsSchema`, `defineClaimsSchema`, `KeySetLoadError` |
+| `identity-kit` | `bearerTokenOf`, `createJwksClient`, `createTokenVerifier`, `createAuthenticator`, `createCaller`, `defineClaimsSchema`, `OPERATION_TYPES`, `KeySetLoadError` |
 | `identity-kit/client` | `createClientCredentialsTokenSource`, `createCachingTokenSource`, tipos `IAccessTokenSource` e `AccessTokenResult` |
 | `identity-kit/fastify` | Hook `onRequest` que autentica e responde 401, e `request.caller` (fase 6; `fastify` como peer opcional) |
 | `identity-kit/testing` | `createTestIssuer` (discovery, JWKS, assinatura de tokens), `createTokenEndpointStandIn` |
 
-**Claims.** `baseClaimsSchema` valida `iss`, `aud`, `sub`, `exp`, `nbf?`, `roles?`, `azp?` e deixa passar claims desconhecidas. `defineClaimsSchema({ resources })` devolve o esquema com `accessRights` e `predefinedFilters` restritos à lista de recursos do módulo e ao vocabulário `create`, `read`, `update`, `delete`, `discover`. Isso resolve o ponto em que o esquema do catálogo está preso aos recursos dele.
+**Claims.** `defineClaimsSchema({ resources })` é a única porta de entrada: o módulo sempre declara os seus recursos e passa o esquema ao verificador (`claims`). Não há esquema-base sem recursos. O esquema valida `iss`, `aud`, `sub`, `exp`, `nbf?`, `roles?`, `azp?` e deixa passar claims desconhecidas. Ele devolve o esquema com `accessRights` e `predefinedFilters` restritos à lista de recursos do módulo e ao vocabulário `create`, `read`, `update`, `delete`, `discover`. Isso resolve o ponto em que o esquema do catálogo está preso aos recursos dele.
 
-**Chamador.** `createCaller(claims)` expõe `subject`, `roles`, `isService` e `holds({ resource, type })`. Não aplica filtros.
+**Chamador.** `createCaller(claims)` expõe `subject`, `roles`, `claims` e `holds({ resource, type })`. A distinção pessoa ou serviço fica fora até haver decisão. Não aplica filtros.
 
 ## 5. Stack
 
@@ -98,7 +98,7 @@ Cada fase termina com `typecheck`, `lint`, `format`, `test` e `jscpd` verdes.
 - Consumidor descartável instala `v0.0.1` com `pnpm` e as mesmas travas do `partymgmt`.
 - **Pronto quando:** o consumidor instala por tag e importa `identity-kit` em Node 24.
 
-**Fase 1: provas primeiro**
+**Fase 1: provas primeiro (testes escritos, vermelhos; ver resultado abaixo)**
 - Inventariar no catálogo todos os testes que exercitam verificador, JWKS e claims (os sete `jwks-client-*` em `tests/operation/clients/` e os que usam `source-tokens.ts`).
 - Portar esses testes para o kit, ainda falhando.
 - **Pronto quando:** a lista de comportamentos exigidos está em testes vermelhos, um por propriedade (cache, intervalo mínimo, coalescência, troca de chave, audiência, expiração, algoritmo recusado).

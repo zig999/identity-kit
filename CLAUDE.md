@@ -51,7 +51,7 @@ Na dúvida, não pertence. Pare e pergunte.
 - Devolver as claims validadas ou **nenhum resultado**, sem dizer ao chamador qual verificação falhou. O motivo vai a um callback de log opcional, sem o token.
 - Manter o cliente de chaves: descoberta em `<emissor>/.well-known/openid-configuration`, leitura do `jwks_uri`, cache, recarga com intervalo mínimo, uma só leitura para pedidos concorrentes e tolerância à troca de chave.
 - Declarar o esquema comum das claims e permitir que cada módulo declare os recursos dele.
-- Expor o chamador verificado: sujeito, papéis, se é serviço e se tem um direito sobre um recurso.
+- Expor o chamador verificado: sujeito, papéis e se tem um direito sobre um recurso.
 
 ### 3.2 Lado cliente (`identity-kit/client`)
 
@@ -122,6 +122,7 @@ Estas regras valem mesmo dentro de um único pacote:
 - **Token do usuário ou token do módulo** nas chamadas entre módulos: o kit só obtém o token do módulo (client credentials). Repasse do token do usuário e troca de token (RFC 8693) ficam fora até haver decisão.
 - **Adaptador Fastify.** Entra só se mais de um módulo usar o mesmo hook.
 - **Eventos publicados (hub).** Como autenticar quem os recebe: token do publicador, assinatura do corpo ou outro mecanismo.
+- **Pessoa ou serviço.** Como o kit distingue um token de usuário de um token de módulo (`azp`, `sub` ou outra claim). O kit não expõe essa distinção até haver decisão.
 - **Tolerância de relógio** diferente de zero.
 - **Registry.** A distribuição por tag git é provisória. Um registry privado pode substituí-la sem mudar o código do kit.
 

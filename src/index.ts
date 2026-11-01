@@ -1,1 +1,14 @@
-export const KIT_NAME = 'identity-kit';
+export { createAuthenticator } from './authenticator.js';
+export type { IAuthenticator } from './authenticator.js';
+export { bearerTokenOf } from './bearer.js';
+export { createCaller } from './caller.js';
+export type { IAccessRequirement, ICaller } from './caller.js';
+export { OPERATION_TYPES, defineClaimsSchema } from './claims.js';
+export type { IClaims, IClaimsDefinition, OperationType } from './claims.js';
+export { createJwksClient } from './jwks-client.js';
+export type { IJwksClientDeps } from './jwks-client.js';
+export { KeySetLoadError } from './key-set-load-error.js';
+export type { IKeySetLoadContext } from './key-set-load-error.js';
+export type { IKeySetLoad, IKeySetSource, KeySetKey } from './key-set.js';
+export { createTokenVerifier } from './token-verifier.js';
+export type { ITokenVerifier, ITokenVerifierDeps, RefusalReason } from './token-verifier.js';
