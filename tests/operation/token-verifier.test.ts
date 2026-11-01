@@ -7,15 +7,14 @@ import { createTokenVerifier } from '../../src/token-verifier.js';
 import type { RefusalReason } from '../../src/token-verifier.js';
 import { rejectionOf } from '../support/issuer-stand-in.js';
 import {
-  generateEcKey,
-  generateRsaKey,
+  generateSigningKey,
   hmacToken,
   signToken,
   signTokenWithHeader,
   tokenWithSegments,
   unsignedToken,
-} from '../support/signing.js';
-import type { ISigningKey, TokenClaims } from '../support/signing.js';
+} from '../../src/testing/signing.js';
+import type { ISigningKey, TokenClaims } from '../../src/testing/signing.js';
 
 const ISSUER = 'https://issuer.example.test';
 const AUDIENCE = 'audience-of-this-module';
@@ -24,9 +23,9 @@ const NOW = new Date('2026-01-01T00:00:00.000Z');
 const NOW_SECONDS = NOW.getTime() / 1000;
 const ONE_HOUR = 3600;
 
-const ISSUER_KEY = generateRsaKey('issuer-key');
-const FOREIGN_KEY = generateRsaKey('foreign-key');
-const EC_KEY = generateEcKey('ec-key', 'ES256');
+const ISSUER_KEY = generateSigningKey('issuer-key', 'RS256');
+const FOREIGN_KEY = generateSigningKey('foreign-key', 'RS256');
+const EC_KEY = generateSigningKey('ec-key', 'ES256');
 const CLAIMS_SCHEMA = defineClaimsSchema({ resources: ['productOffering', 'hub'] });
 
 const keySetOf = (...keys: readonly ISigningKey[]): IKeySetSource => ({ load: async () => keys.map((key) => key.jwk) });
@@ -50,9 +49,9 @@ describe('a token that verifies', () => {
   it.each([
     { label: 'RS256', key: ISSUER_KEY },
     { label: 'ES256', key: EC_KEY },
-    { label: 'RS512', key: generateRsaKey('rs512-key', 'RS512') },
-    { label: 'ES384', key: generateEcKey('es384-key', 'ES384') },
-    { label: 'ES512', key: generateEcKey('es512-key', 'ES512') },
+    { label: 'RS512', key: generateSigningKey('rs512-key', 'RS512') },
+    { label: 'ES384', key: generateSigningKey('es384-key', 'ES384') },
+    { label: 'ES512', key: generateSigningKey('es512-key', 'ES512') },
   ])('yields its claims when it is signed with $label by a published key', async ({ key }) => {
     const answer = await verifierOver(keySetOf(key)).verify(signToken(claims({ roles: ['auditor'] }), key), AUDIENCE);
 
@@ -74,7 +73,10 @@ describe('a token that verifies', () => {
   it('yields its claims when it names no key id and a published key of its type verifies it', async () => {
     const token = signTokenWithHeader(claims(), ISSUER_KEY, { alg: 'RS256', typ: 'JWT' });
 
-    const answer = await verifierOver(keySetOf(generateRsaKey('other'), ISSUER_KEY)).verify(token, AUDIENCE);
+    const answer = await verifierOver(keySetOf(generateSigningKey('other', 'RS256'), ISSUER_KEY)).verify(
+      token,
+      AUDIENCE,
+    );
 
     expect(answer).toBeDefined();
   });
@@ -295,7 +297,7 @@ describe('the validity period of a token', () => {
 
 describe('the key set the verifier reads', () => {
   it('asks the key set again, refreshing, when no cached key fits the token, and accepts a key that was just published', async () => {
-    const rotated = generateRsaKey('rotated-key');
+    const rotated = generateSigningKey('rotated-key', 'RS256');
     const load = vi.fn(async ({ refresh }: { refresh: boolean }): Promise<readonly KeySetKey[]> => [
       ...(refresh ? [rotated.jwk] : []),
       ISSUER_KEY.jwk,

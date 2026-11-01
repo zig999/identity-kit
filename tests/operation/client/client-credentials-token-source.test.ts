@@ -2,8 +2,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { createClientCredentialsTokenSource } from '../../../src/client/client-credentials-token-source.js';
 import type { IClientCredentialsOptions } from '../../../src/client/client-credentials-token-source.js';
-import { serveTokenEndpoint, tokenAnswer } from '../../support/token-endpoint-stand-in.js';
-import type { ITokenEndpointStandIn } from '../../support/token-endpoint-stand-in.js';
+import { createTokenEndpointStandIn, tokenAnswer } from '../../../src/testing/token-endpoint-stand-in.js';
+import type { ITokenEndpointStandIn } from '../../../src/testing/token-endpoint-stand-in.js';
 
 const CLIENT_ID = 'orders-service';
 const CLIENT_SECRET = 'very-secret-value';
@@ -12,7 +12,7 @@ const ISSUED = 'issued-access-token';
 const opened: ITokenEndpointStandIn[] = [];
 
 const endpoint = async (): Promise<ITokenEndpointStandIn> => {
-  const standIn = await serveTokenEndpoint();
+  const standIn = await createTokenEndpointStandIn();
   opened.push(standIn);
   return standIn;
 };

@@ -120,12 +120,12 @@ Cada fase termina com `typecheck`, `lint`, `format`, `test` e `jscpd` verdes.
 - Token por client credentials e cache com renovação, portados do `productorder` com os testes (`client-credentials-access-token-source.spec.ts`, `caching-access-token-source.spec.ts`, `access-token-source.spec.ts`).
 - **Pronto quando:** os testes portados passam sem `ICatalogAccessConfig`.
 
-**Fase 5: emissor de teste**
+**Fase 5: emissor de teste (concluída)**
 - `createTestIssuer` (par de chaves ES256 em memória, discovery e JWKS em loopback, assinatura de tokens com claims dadas, rotação de chave) e `createTokenEndpointStandIn`.
 - Os testes das fases 2 e 4 passam a usá-lo.
-- **Pronto quando:** nenhum teste do kit monta emissor próprio.
+- **Pronto quando:** nenhum teste do kit monta emissor próprio com chaves próprias. Os testes do cliente JWKS continuam substituindo `fetch`, porque precisam controlar o relógio e as falhas de cada resposta.
 
-**Fase 6: adaptador Fastify (opcional)**
+**Fase 6: adaptador Fastify (opcional; não feita, aguarda decisão)**
 - Hook `onRequest`, 401 sem token, token inválido ou expirado; 403 fica com o módulo.
 - Só entra se `partymgmt` e `productorder` quiserem o mesmo hook. Caso contrário, cada módulo escreve o seu em 10 linhas.
 

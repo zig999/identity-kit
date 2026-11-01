@@ -45,6 +45,16 @@ describe('the imports of the package', () => {
   });
 });
 
+describe('the test support the package ships', () => {
+  it('is imported by no file of the package outside its own folder', () => {
+    const reaching = importsOf((path) => !path.startsWith('testing/')).filter(({ specifier }) =>
+      specifier.includes('testing/'),
+    );
+
+    expect(reaching).toEqual([]);
+  });
+});
+
 describe('the source of the package', () => {
   it('writes nothing to the console', () => {
     expect(sources.filter(({ text }) => /\bconsole\./.test(text)).map(({ path }) => path)).toEqual([]);
