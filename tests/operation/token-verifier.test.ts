@@ -155,6 +155,16 @@ describe('a token that declares an algorithm the module never accepts', () => {
     },
   );
 
+  it('is refused when it names an accepted algorithm in another letter case, though the signature holds', async () => {
+    const token = signTokenWithHeader(claims(), ISSUER_KEY, { alg: 'rs256', typ: 'JWT', kid: ISSUER_KEY.kid });
+
+    const { alg: _declared, ...jwkWithoutAlg } = ISSUER_KEY.jwk;
+
+    const answer = await verifierOver({ load: async () => [jwkWithoutAlg] }).verify(token, AUDIENCE);
+
+    expect(answer).toBeUndefined();
+  });
+
   it('is refused when it carries no signature and declares no algorithm', async () => {
     expect(await verifier.verify(unsignedToken(claims()), AUDIENCE)).toBeUndefined();
   });

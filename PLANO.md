@@ -103,18 +103,20 @@ Cada fase termina com `typecheck`, `lint`, `format`, `test` e `jscpd` verdes.
 - Portar esses testes para o kit, ainda falhando.
 - **Pronto quando:** a lista de comportamentos exigidos está em testes vermelhos, um por propriedade (cache, intervalo mínimo, coalescência, troca de chave, audiência, expiração, algoritmo recusado).
 
-**Fase 2: verificação**
+**Fase 2: verificação (concluída)**
 - Cliente JWKS e verificador, sem trace e sem `DataError`.
 - `bearerTokenOf` único, com a regra mais estrita (base64url).
 - Comportamentos novos: `iss`, `nbf`, tolerância de relógio, callback de motivo.
 - **Pronto quando:** os testes da fase 1 passam e os novos também.
+
+**Resultado.** 246 testes passam (239 de comportamento e 7 de arquitetura, mais os 6 de configuração já contados entre eles). Uma verificação por mutação (18 alterações deliberadas no código) mostrou que cada uma é detectada por pelo menos um teste; uma delas (algoritmo em outra caixa) só foi detectada depois de acrescentar um teste com chave sem `alg`.
 
 **Fase 3: claims e chamador**
 - `baseClaimsSchema`, `defineClaimsSchema`, `createCaller`, `createAuthenticator`.
 - Depende da decisão sobre o formato comum das claims. Se ela atrasar, segue com o formato do catálogo estendido e uma lista de recursos injetável.
 - **Pronto quando:** um módulo de exemplo nos testes define seus recursos e o esquema recusa recurso fora da lista.
 
-**Fase 4: lado cliente**
+**Fase 4: lado cliente (concluída)**
 - Token por client credentials e cache com renovação, portados do `productorder` com os testes (`client-credentials-access-token-source.spec.ts`, `caching-access-token-source.spec.ts`, `access-token-source.spec.ts`).
 - **Pronto quando:** os testes portados passam sem `ICatalogAccessConfig`.
 

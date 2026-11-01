@@ -1,5 +1,4 @@
 import type { IClaims, OperationType } from './claims.js';
-import { notImplemented } from './not-implemented.js';
 
 export interface IAccessRequirement {
   readonly resource: string;
@@ -13,4 +12,11 @@ export interface ICaller {
   holds(requirement: IAccessRequirement): boolean;
 }
 
-export const createCaller = (_claims: IClaims): ICaller => notImplemented('createCaller');
+export const createCaller = (claims: IClaims): ICaller => ({
+  claims,
+  subject: claims.sub,
+  roles: claims.roles ?? [],
+  holds(requirement: IAccessRequirement): boolean {
+    return claims.accessRights?.[requirement.resource]?.includes(requirement.type) === true;
+  },
+});
