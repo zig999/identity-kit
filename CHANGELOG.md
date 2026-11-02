@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0
+
+Emissor de teste alcançável por outro container. Tudo é novo e opcional: sem as opções, o comportamento é o da 0.1.0.
+
+- `createTestIssuer` aceita `host` e `port` (padrão: `127.0.0.1` e porta efêmera).
+- `createTestIssuer` aceita `publicUrl`: é o `iss` das claims geradas e o `issuer` do discovery, e o `jwks_uri` deriva dela, independente do endereço de escuta. `issuer.url` devolve a URL pública.
+- `createTestIssuer` aceita `issuanceRoute: true`, que liga `POST /issue` (`audience`, `subject?`, `roles?`) e devolve `{ token }` assinado pela chave publicada em `/keys`. Desligada por padrão. Sem trava contra produção; a rota é só para teste.
+- Pedido de origem: `CR-test-issuer-alcancavel-por-outro-container.md` (productorder).
+
 ## 0.1.0
 
 Primeira versão utilizável.

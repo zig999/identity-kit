@@ -111,6 +111,21 @@ issuer.rotateKey({ retireCurrent: true });          // troca de chave
 await issuer.close();
 ```
 
+### Emissor em outro container
+
+Para o emissor rodar como serviço do `docker compose` (por exemplo, a imagem de um módulo que já traz o kit), passe o endereço de escuta e a URL pública. Uma linha basta:
+
+```ts
+const issuer = await createTestIssuer({
+  host: '0.0.0.0',                     // padrão: 127.0.0.1
+  port: 8080,                          // padrão: porta efêmera
+  publicUrl: 'http://test-issuer:8080', // é o `iss`, o `issuer` do discovery; o `jwks_uri` deriva dela
+  issuanceRoute: true,                 // padrão: desligada
+});
+```
+
+Com `issuanceRoute: true`, o emissor responde `POST /issue` com `{ "audience": "...", "subject": "...", "roles": ["..."] }` (só `audience` é obrigatório) e devolve `{ "token": "..." }`, assinado pela chave que ele publica em `/keys`. Corpo inválido responde 400. **A rota emite token para qualquer pedido: use só em ambiente de teste.** O kit não tem trava contra produção; a variável `NODE_ENV` não é lida.
+
 Use `issuer.url` como emissor do verificador. Para os casos de recusa, `identity-kit/testing` também traz `unsignedToken`, `hmacToken`, `signToken` com chave própria e `tokenWithSegments`.
 
 ## Desenvolvimento
