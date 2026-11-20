@@ -167,7 +167,7 @@ const issuanceOf = (ring: IKeyRing, options: ITestIssuerOptions): IIssuanceSetup
         iss: url,
         aud: audience,
         sub: DEFAULT_SUBJECT,
-        exp: now().getTime() / MILLISECONDS_PER_SECOND + lifetime,
+        exp: Math.floor(now().getTime() / MILLISECONDS_PER_SECOND) + lifetime,
         ...extra,
       }),
       issue: (claims) => signToken(claims, ring.current()),

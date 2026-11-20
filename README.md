@@ -13,7 +13,7 @@ O kit autentica; o módulo autoriza. Qual direito cada operação exige, e o que
 Por tag git. A tag aponta para um commit que traz o `dist` compilado.
 
 ```json
-{ "dependencies": { "identity-kit": "github:zig999/identity-kit#v0.1.0" } }
+{ "dependencies": { "identity-kit": "github:zig999/identity-kit#v0.3.0" } }
 ```
 
 Tags são imutáveis. Para atualizar, troque a tag e leia o `CHANGELOG.md`.
@@ -24,7 +24,7 @@ Tags são imutáveis. Para atualizar, troque a tag e leia o `CHANGELOG.md`.
 |---|---|
 | `identity-kit` | Verificação: `bearerTokenOf`, `createJwksClient`, `createTokenVerifier`, `createAuthenticator`, `createCaller`, `defineClaimsSchema`, `OPERATION_TYPES`, `KeySetLoadError` |
 | `identity-kit/client` | Chamada a outro módulo: `createClientCredentialsTokenSource`, `createCachingTokenSource` |
-| `identity-kit/testing` | Só para testes: `createTestIssuer`, `createTokenEndpointStandIn`, `generateSigningKey`, `signToken`, `unsignedToken`, `hmacToken` e afins. Nunca em produção |
+| `identity-kit/testing` | Só para testes: `createTestIssuer`, `issueConformanceToken`, `writeEnvSettings`, `createTokenEndpointStandIn`, `generateSigningKey`, `signToken`, `unsignedToken`, `hmacToken` e afins. Nunca em produção |
 
 ## Verificar quem chama
 
@@ -127,6 +127,27 @@ const issuer = await createTestIssuer({
 Com `issuanceRoute: true`, o emissor responde `POST /issue` com `{ "audience": "...", "subject": "...", "roles": ["..."] }` (só `audience` é obrigatório) e devolve `{ "token": "..." }`, assinado pela chave que ele publica em `/keys`. Corpo inválido responde 400. **A rota emite token para qualquer pedido: use só em ambiente de teste.** O kit não tem trava contra produção; a variável `NODE_ENV` não é lida.
 
 Use `issuer.url` como emissor do verificador. Para os casos de recusa, `identity-kit/testing` também traz `unsignedToken`, `hmacToken`, `signToken` com chave própria e `tokenWithSegments`.
+
+### Token para o CTK de conformidade
+
+O CTK do TM Forum roda fora do vitest e precisa de um token Bearer válido para o módulo sob teste. `issueConformanceToken` monta esse token com o emissor de teste, e `writeEnvSettings` grava os valores no arquivo de ambiente. Chame as duas de um script ou de suporte de teste, nunca de código do módulo que vai para o build.
+
+```ts
+import { createTestIssuer, issueConformanceToken, writeEnvSettings } from 'identity-kit/testing';
+
+const issuer = await createTestIssuer({ lifetimeSeconds: 7200 }); // padrão: 3600
+const { bearerToken, expiresAt } = issueConformanceToken(issuer, 'audience-do-modulo', {
+  resources: ['productOrder', 'hub'], // o kit não inventa recurso: sem a lista, nenhum direito é concedido
+  // operations: ['read', 'discover'], // padrão: todas as OPERATION_TYPES para cada recurso
+});
+await writeEnvSettings('.env', {
+  AUTH_ISSUER: issuer.url,
+  CONFORMANCE_ACCESS_TOKEN: bearerToken, // os nomes das variáveis são do módulo
+});
+// quem chama decide o que imprimir (por exemplo, só os nomes e `expiresAt`) e liga SIGINT/SIGTERM a issuer.close()
+```
+
+`writeEnvSettings` cria o arquivo com modo `0600` se ele não existir e não altera o modo de um arquivo existente. Troca só as linhas dos nomes recebidos (inclusive com `export`), acrescenta as que faltam e não toca nas demais. Mantém o recuo, o `export` e o fim de linha (LF ou CRLF) do arquivo. Recusa nome inválido ou valor com quebra de linha, com `TestSupportError`, sem gravar nada, e não devolve nem registra os valores. Nenhuma das duas funções escreve em console, e o kit não registra tratador de sinal: o emissor fica de pé até quem o criou chamar `close()`.
 
 ## Desenvolvimento
 

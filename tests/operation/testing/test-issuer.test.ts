@@ -81,6 +81,12 @@ describe('the documents the test issuer serves', () => {
 });
 
 describe('the claims the test issuer proposes', () => {
+  it('give an integer expiry when the clock stands between two seconds', async () => {
+    const issuer = await issuerOn({ now: () => new Date(START_MS + 500) });
+
+    expect(issuer.claims(AUDIENCE)['exp']).toBe(START_MS / 1000 + 3600);
+  });
+
   it('name the issuer, the audience, a subject and an expiry one hour after the clock it was given', async () => {
     const issuer = await issuerOn();
 

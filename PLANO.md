@@ -53,7 +53,7 @@ Exportada por `exports` do `package.json`, sem acesso a arquivos internos.
 | `identity-kit` | `bearerTokenOf`, `createJwksClient`, `createTokenVerifier`, `createAuthenticator`, `createCaller`, `defineClaimsSchema`, `OPERATION_TYPES`, `KeySetLoadError` |
 | `identity-kit/client` | `createClientCredentialsTokenSource`, `createCachingTokenSource`, tipos `IAccessTokenSource` e `AccessTokenResult` |
 | `identity-kit/fastify` | Hook `onRequest` que autentica e responde 401, e `request.caller` (fase 6; `fastify` como peer opcional) |
-| `identity-kit/testing` | `createTestIssuer` (discovery, JWKS, assinatura de tokens), `createTokenEndpointStandIn` |
+| `identity-kit/testing` | `createTestIssuer` (discovery, JWKS, assinatura de tokens), `issueConformanceToken`, `writeEnvSettings`, `createTokenEndpointStandIn` |
 
 **Claims.** `defineClaimsSchema({ resources })` é a única porta de entrada: o módulo sempre declara os seus recursos e passa o esquema ao verificador (`claims`). Não há esquema-base sem recursos. O esquema valida `iss`, `aud`, `sub`, `exp`, `nbf?`, `roles?`, `azp?` e deixa passar claims desconhecidas. Ele devolve o esquema com `accessRights` e `predefinedFilters` restritos à lista de recursos do módulo e ao vocabulário `create`, `read`, `update`, `delete`, `discover`. Isso resolve o ponto em que o esquema do catálogo está preso aos recursos dele.
 

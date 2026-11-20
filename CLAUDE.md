@@ -65,6 +65,8 @@ Na dúvida, não pertence. Pare e pergunte.
 - Emissor de teste em loopback: discovery, JWKS, assinatura de tokens com as claims pedidas, rotação de chave.
 - Endpoint de token de teste que registra o que recebeu.
 - Nenhum teste de módulo monta o seu próprio emissor.
+- Token Bearer para o CTK de conformidade (`issueConformanceToken`): dado o emissor de teste, a audiência e os recursos que o módulo declara, devolve o token com o prefixo `Bearer ` e o `exp`. Sem recursos, não concede nenhum.
+- Gravação de variáveis num arquivo de ambiente (`writeEnvSettings`), só para o fluxo do CTK: cria com modo `0600`, troca só as linhas pedidas, recusa nome inválido e valor com quebra de linha. Decisão do usuário em 2026-11-20, aceitando o CR `CR-token-de-conformidade-para-o-ctk.md` por inteiro: é uma exceção à regra de decisão da seção 2 (gravar arquivo não responde a nenhuma das cinco perguntas) e ao uso em dois módulos da seção 4 (hoje só um módulo tem a lógica). O kit só **escreve** o segredo que recebe por parâmetro e nunca o devolve nem o registra. Fica restrita a `identity-kit/testing`.
 
 ### 3.4 Adaptador Fastify (`identity-kit/fastify`, opcional)
 
