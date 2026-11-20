@@ -2,7 +2,7 @@
 
 Este arquivo limita o que o identity-kit é, possui e faz. Quando um pedido conflitar com ele, aponte o conflito antes de implementar qualquer coisa.
 
-Regras gerais dos módulos de vendas: `../CLAUDE.md`. Este arquivo vale só para o identity-kit. O escopo detalhado, a interface pública e as fases de construção estão em `PLANO.md`.
+Regras gerais dos módulos de vendas: `../CLAUDE.md`. Este arquivo vale só para o identity-kit. A interface pública e o formato das claims estão no `README.md`; o histórico de versões, no `CHANGELOG.md`.
 
 ## 1. Propósito
 
@@ -90,7 +90,7 @@ Na dúvida, não pertence. Pare e pergunte.
 - Tudo que o kit expõe tem um uso em pelo menos dois módulos. Código usado por um só módulo fica nele.
 - O kit não conhece os nomes de recursos de nenhum módulo. Cada módulo injeta os seus.
 - Papéis como `catalog-administrator` e `product-order-administrator` são do módulo. O kit só entrega a lista de papéis do token.
-- Quando o catálogo e o productorder divergirem sobre um comportamento, o kit segue o contrato público definido em `PLANO.md`, e os dois se adaptam.
+- Quando o catálogo e o productorder divergirem sobre um comportamento, o kit segue o contrato público descrito no `README.md`, e os dois se adaptam.
 
 ## 5. Fronteiras internas
 
@@ -113,7 +113,7 @@ Estas regras valem mesmo dentro de um único pacote:
 - Siga as RFCs listadas na seção 9. Onde um módulo pedir comportamento diferente, a RFC vale.
 - **Stack** igual à do `partymgmt`, sem o que é de serviço: Node 24 (`engines.node >=24`), pnpm, TypeScript estrito, Vitest, oxlint, prettier, secretlint e jscpd. Coloque `~/.nvm/versions/node/v24.22.1/bin` no PATH antes de rodar qualquer comando.
 - Regras de código mantidas do `partymgmt`: sem `console`, sem ciclo de import, sem `any`, sem asserção de tipo, sem `process.env`, função com até 30 linhas, até 3 parâmetros, sem número mágico, arquivos em kebab-case.
-- **Versão e distribuição:** os módulos instalam o kit por tag git (`github:zig999/identity-kit#vX.Y.Z`). A tag aponta para um commit que traz `dist` compilado, porque o Node não executa TypeScript dentro de `node_modules`. Tags são imutáveis e nunca movidas. Toda tag leva uma entrada no `CHANGELOG.md`. Mudança incompatível exige tag nova.
+- **Versão e distribuição:** os módulos instalam o kit por tag git (`github:zig999/identity-kit#vX.Y.Z`). A tag aponta para um commit que traz `dist` compilado, porque o Node não executa TypeScript dentro de `node_modules`. Tags são imutáveis e nunca movidas. Toda tag leva uma entrada no `CHANGELOG.md`. Mudança incompatível exige tag nova. Semver: a versão fica em `0.x` até haver três consumidores em uso, e a partir daí é `1.0.0`.
 - Antes de criar função, tipo ou opção pública, cite a RFC ou o uso real em dois módulos que a justifica. Sem fonte, não cria.
 - O formato das claims comuns é decidido uma vez e vale para todos. Não crie variantes por módulo dentro do kit.
 

@@ -2,7 +2,7 @@
 
 Biblioteca de autenticação dos módulos de vendas. Ela verifica o token Bearer (JWT) que chega, obtém o token para chamar outro módulo e traz um emissor OIDC de teste.
 
-O kit autentica; o módulo autoriza. Qual direito cada operação exige, e o que cada filtro significa, é decisão do módulo. O escopo completo está em `CLAUDE.md` e o plano em `PLANO.md`.
+O kit autentica; o módulo autoriza. Qual direito cada operação exige, e o que cada filtro significa, é decisão do módulo. O escopo completo está em `CLAUDE.md`.
 
 - Node 24 (`engines.node >=24`), ESM.
 - Uma dependência de runtime: `zod`.
